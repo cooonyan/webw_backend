@@ -24,15 +24,14 @@ def verify_token(token):
 @bp.route('/login', methods=['POST'])
 def login():
     try:
+        conn = sqlite3.connect('userdata.db')
         if not request.is_json:
-            return jsonify({'status': 'fail','message':'나쁜 요청'}), 400
+            return jsonify({'status': 'fail','message':'나쁜 요청1'}), 400
         data = request.get_json()
         username = data.get('username')
         private_token = data.get('private_token')
         if not username or not private_token:
-            return jsonify({'status': 'fail','message':'나쁜 요청'}), 400
-        
-        conn = sqlite3.connect('userdata.db')
+            return jsonify({'status': 'fail','message':'나쁜 요청2'}), 400
         cursor = conn.cursor()
         cursor.execute('SELECT private_token FROM "userINFO" WHERE userName = ?', (username,))
         row = cursor.fetchone()
