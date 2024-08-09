@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
-import sqlite3, bcrypt, jwt, datetime
+import sqlite3, bcrypt, jwt, datetime, dotenv
 
-SECRET_KEY = 'TESTKEY'
-
+SECRET_KEY = dotenv.get('SECRET_KEY')
 bp = Blueprint('login', __name__)
 
 def generate_token(username):
