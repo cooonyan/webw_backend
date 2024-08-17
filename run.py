@@ -3,7 +3,7 @@ from flask_cors import CORS
 import module.testroute as testroute
 import module.register as register
 import module.login as login
-import module.edit_service as eddit_service
+import module.edit_service as edit_service
 import module.get_service as get_service
 import module.service as service
 
@@ -20,4 +20,4 @@ app.register_blueprint(get_service.bp)
 app.register_blueprint(service.bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

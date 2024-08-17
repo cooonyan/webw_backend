@@ -36,7 +36,13 @@ def get_service():
                 'service_name': user_service[1],
                 'service_label': user_service[2],
                 'service_url': user_service[3],
-                'activate': user_service[4]
+                'activate': user_service[4],
+                'user_link1': user_service[5],
+                'user_link2': user_service[6],
+                'user_link3': user_service[7],
+                'user_link1_name': user_service[8],
+                'user_link2_name': user_service[9],
+                'user_link3_name': user_service[10]
             }}), 200
     
     except sqlite3.Error as e:

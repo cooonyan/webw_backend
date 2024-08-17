@@ -1,6 +1,8 @@
 import sqlite3
 from flask import Blueprint, request, jsonify
 
+
+
 bp = Blueprint('service', __name__)
 
 def get_db_connection():
@@ -22,10 +24,10 @@ def get_service():
     conn.close()
 
     if service is None:
-        return jsonify({'status': 'fail', 'message': '404 페이지로 이동'}), 404
+        return jsonify({'status': 'fail', 'message': '404 페이지로 이동'}), 405
     
     if service['activate'] == 0:
-        return jsonify({'status': 'middleman', 'message': '비활성화된 페이지 404로 이동'}), 404
+        return jsonify({'status': 'middleman', 'message': '비활성화된 페이지 404로 이동'}), 405
     else:
         return jsonify({'status': 'success', 'service': {
             'service_name': service['service_name'],

@@ -19,30 +19,34 @@ def edit_service():
         token = request.headers.get('Authorization').split(' ')[1]  # Extract token from Authorization header
         username = verify_token(token)
         if username is None:
-            return jsonify({'status': 'fail','message':'invalid or expired token'}), 401
-
-        owner = data.get('owner')
+            return jsonify({'status': 'fail','message':'만료된 토큰'}), 401
+        owner = username
         service_name = data.get('service_name')
         service_label = data.get('service_label')
         service_url = data.get('service_url')
         activate = data.get('activate')
-
+        user_link1 = data.get('user_link1')
+        user_link2 = data.get('user_link2')
+        user_link3 = data.get('user_link3')
+        user_link1_name = data.get('user_link1_name')
+        user_link2_name = data.get('user_link2_name')
+        user_link3_name = data.get('user_link3_name')
         conn = sqlite3.connect('userdata.db')
         cursor = conn.cursor()
-
-        cursor.execute('SELECT * FROM userService WHERE owner = ?', (owner,))
+        cursor.execute('SELECT * FROM userService WHERE owner = ?', (username,))
         user_service = cursor.fetchone()
-
         if user_service is None:
-            return jsonify({'status': 'fail','message':'owner not found'}), 401
+            print("요청 찾기 불가")
+            print(user_service)
+            return jsonify({'status': 'fail','message':'요청자를 찾을 수 없음'}), 401
         else:
-            cursor.execute('UPDATE userService SET service_name = ?, service_label = ?, service_url = ?, activate = ? WHERE owner = ?', 
-                           (service_name, service_label, service_url, activate, owner))
-
+            cursor.execute('UPDATE userService SET service_name = ?, service_label = ?, service_url = ?, activate = ?, user_link1 = ?, user_link2 = ?, user_link3 = ?, user_link1_name = ?, user_link2_name = ?, user_link3_name = ? WHERE owner = ?',
+                           (service_name, service_label, service_url, activate, user_link1, user_link2, user_link3, user_link1_name, user_link2_name, user_link3_name, username))
         conn.commit()
         conn.close()
-
-        return jsonify({'status': 'success','message':'service updated successfully'}), 200
+        print("서비스 업데이트 성공")
+        print(service_name, service_label, service_url, activate, user_link1, user_link2, user_link3, user_link1_name, user_link2_name, user_link3_name)
+        return jsonify({'status': 'success','message':'서비스가 성공적으로 업데이트 됨'}), 200
     except Exception as e:
         print(e)
         return jsonify({'status': 'fail','message':'unknown request'}), 500

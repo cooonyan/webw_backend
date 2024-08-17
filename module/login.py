@@ -1,7 +1,12 @@
+import os
 from flask import Blueprint, request, jsonify
-import sqlite3, bcrypt, jwt, datetime, dotenv
+import sqlite3, bcrypt, jwt, datetime
+from dotenv import load_dotenv
 
-SECRET_KEY = dotenv.get('SECRET_KEY')
+load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 bp = Blueprint('login', __name__)
 
 def generate_token(username):
@@ -25,25 +30,29 @@ def login():
     try:
         conn = sqlite3.connect('userdata.db')
         if not request.is_json:
-            return jsonify({'status': 'fail','message':'나쁜 요청1'}), 400
+            print(request, "1")
+            return jsonify({'status': 'fail','message':'잘못된 요청입니다.'}), 400
         data = request.get_json()
         username = data.get('username')
         private_token = data.get('private_token')
         if not username or not private_token:
-            return jsonify({'status': 'fail','message':'나쁜 요청2'}), 400
+            print(request, "2")
+            return jsonify({'status': 'fail','message':'잘못된 요청입니다 (요청값이 비었습니다.)'}), 400
+
         cursor = conn.cursor()
         cursor.execute('SELECT private_token FROM "userINFO" WHERE userName = ?', (username,))
         row = cursor.fetchone()
         
         if row is None or not bcrypt.checkpw(private_token.encode('utf-8'), row[0]):
             return jsonify({'status': 'fail','message':'잘못된 인증'}), 401
-        
         conn.close()
         token = generate_token(username)
-        return jsonify({'status': 'cool', 'message': 'user logged in', 'token': token}), 200
+        return jsonify({'status': 'cool', 'message': '로그인 성공', 'token': token}), 200
+
     except Exception as e:
         print(e)
         return jsonify({'status': 'fail','message':'unknown request'}), 500
+
     finally:
         if conn:
             conn.close()
