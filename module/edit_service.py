@@ -33,6 +33,19 @@ def edit_service():
         user_link3_name = data.get('user_link3_name')
         conn = sqlite3.connect('userdata.db')
         cursor = conn.cursor()
+
+        print(f"Checking for duplicate service URL: {service_url} for owner: {owner}")
+        cursor.execute('SELECT * FROM userService WHERE service_url = ? AND owner != ?', (service_url, owner))
+        duplicate_service = cursor.fetchone()
+        print("Duplicate service check result:", duplicate_service)
+        if service_url == '' : pass
+        else:
+            if duplicate_service is not None:
+                return jsonify({'status': 'fail', 'message': '이미 사용 중인 서비스 URL입니다.'}), 409
+
+        cursor.execute('SELECT * FROM userService WHERE owner = ?', (username,))
+        user_service = cursor.fetchone()
+
         cursor.execute('SELECT * FROM userService WHERE owner = ?', (username,))
         user_service = cursor.fetchone()
         if user_service is None:

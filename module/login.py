@@ -44,7 +44,7 @@ def login():
         row = cursor.fetchone()
         
         if row is None or not bcrypt.checkpw(private_token.encode('utf-8'), row[0]):
-            return jsonify({'status': 'fail','message':'잘못된 인증'}), 401
+            return jsonify({'status': 'fail','message':'아이디 혹은 비밀번호가 틀립니다.'}), 401
         conn.close()
         token = generate_token(username)
         return jsonify({'status': 'cool', 'message': '로그인 성공', 'token': token}), 200

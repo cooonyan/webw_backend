@@ -17,7 +17,7 @@ bp = Blueprint('register', __name__)
 def register():
     try:
         if not request.is_json:
-            return jsonify({'status': 'fail','message':'나쁜 요청'}), 400
+            return jsonify({'status': 'fail','message':'메소드 나쁜 요청'}), 400
         data = request.get_json()
         username = data.get('username')
         private_token = data.get('private_token')
@@ -42,6 +42,9 @@ def register():
         print(e)
         return jsonify({'status': 'fail','message':str(e)}), 500
     finally:
-        if conn:
-            conn.close()
+        try:
+            if conn:
+                conn.close()
+        except:
+            pass
 
